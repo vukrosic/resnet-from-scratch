@@ -1,0 +1,89 @@
+== step1_digits ==
+pictures to learn from: 1437   test pictures: 360   pixels in a picture: 64
+numbers in the 4-layer network: 13,130
+layers   step size   right on training pictures   right on test pictures
+     4         0.1                       100.0 %                   98.2 %
+first run: wrong on 7 of 360 test pictures
+
+== step2_deeper ==
+layers   step size   right on training pictures   right on test pictures
+     4         0.1                       100.0 %                   98.2 %
+     8         0.1                       100.0 %                   97.4 %
+    16        0.01                       100.0 %                   96.9 %
+    32       0.003                       100.0 %                   95.9 %
+    64       0.003                        42.5 %                   42.6 %
+
+Is 64 layers only slow? The same network with four times the training (400 epochs):
+layers   step size   right on training pictures   right on test pictures
+    64       0.003                        53.1 %                   50.7 %
+
+== step3_do_nothing ==
+trained 8-layer network: 100.0 % of the training pictures
+64 layers built by hand: 100.0 %   same answer on every picture: True
+on the test pictures: 97.5 % and 97.5 %
+
+learn to change nothing: error left after training, as a share of the input
+  2 plain layers: start  134.0 %, after training   6.97 %   with skips, before any training: 0.00 %
+  8 plain layers: start  130.3 %, after training  13.34 %   with skips, before any training: 0.00 %
+ 32 plain layers: start   94.2 %, after training  15.87 %   with skips, before any training: 0.00 %
+ 62 plain layers: start  117.5 %, after training  36.24 %   with skips, before any training: 0.00 %
+
+== step4_plus ==
+a new 64-layer network with skips gives the same answers as its 2 outer layers alone: True
+layers   step size   right on training pictures   right on test pictures
+     4         0.1                       100.0 %                   97.6 %
+     8         0.1                       100.0 %                   98.0 %
+    16         0.1                       100.0 %                   97.9 %
+    32        0.03                       100.0 %                   97.4 %
+    64        0.01                       100.0 %                   97.6 %
+   128       0.003                       100.0 %                   96.9 %
+
+== step5_signal ==
+plain network, 64 layers, new (5 networks averaged)
+  two different digits, how alike: after layer 1 0.301, layer 17 0.950, layer 33 0.975, layer 63 0.9941
+  error signal: at the last block 0.0146, at the first block 0.008127, first / last = 0.56
+skip network, 64 layers, new (5 networks averaged)
+  two different digits, how alike: after layer 1 0.301, layer 17 0.301, layer 33 0.301, layer 63 0.3008
+  error signal: at the last block 0.0145, at the first block 0.010329, first / last = 0.71
+plain network, 64 layers, trained: after layer 1 0.283, layer 33 0.917, layer 63 0.990
+skip network, 64 layers, trained: after layer 1 0.300, layer 33 0.236, layer 63 0.354
+
+== step6_delete ==
+skip network, 64 layers, all blocks: 97.8 % of the test pictures
+  one block deleted: average 97.8 %, worst 97.2 %, best 98.3 %
+plain network, 32 layers, all blocks: 94.2 % of the test pictures
+  one block deleted: average 18.0 %, worst 0.6 %, best 39.4 %
+size of the change one block adds, as a share of its input: average 16.6 %, largest 25.8 %, smallest 11.3 %
+skip network, blocks deleted at random (average of 50 draws):
+   1 of 31 deleted: 97.8 %
+   2 of 31 deleted: 97.8 %
+   4 of 31 deleted: 97.5 %
+   8 of 31 deleted: 97.1 %
+  12 of 31 deleted: 96.5 %
+  16 of 31 deleted: 95.2 %
+  20 of 31 deleted: 94.1 %
+  24 of 31 deleted: 91.2 %
+  28 of 31 deleted: 86.5 %
+  31 of 31 deleted: 78.1 %
+
+== exercise ==
+all 31 blocks: 97.8 % of the test pictures
+16 of 31 blocks deleted at random, 200 draws: average 95.4 %, worst 91.4 %, best 97.8 %
+31 of 31 blocks deleted at random, 200 draws: average 78.1 %, worst 78.1 %, best 78.1 %
+the second line is the first layer and the last layer alone
+the first 16 blocks deleted: 89.4 %   the last 16 blocks deleted: 96.9 %
+
+== tests ==
+ok   1,437 training pictures and 360 test pictures
+ok   a picture is 64 pixels
+ok   all ten digits are in the test set
+ok   a 64-layer network has 31 blocks
+ok   64 layers hold 262,730 numbers
+ok   plain and skip networks hold the same count of numbers
+ok   a new block with a skip changes nothing
+ok   a new plain block changes its input
+ok   deleting a block that changes nothing changes no answer
+ok   a new network guesses about 1 in 10
+ok   the 64-layer network built by hand answers like the 8-layer one
+11 of 11 checks passed
+
